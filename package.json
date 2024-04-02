@@ -1,0 +1,61 @@
+{
+  "name": "mossland-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mossland/Agora_backend"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.6",
+    "@nomicfoundation/hardhat-toolbox": "^2.0.0",
+    "@nomiclabs/hardhat-etherscan": "3.1.7",
+    "@openzeppelin/contracts": "^4.8.3",
+    "alchemy-sdk": "^2.1.0",
+    "axios": "^0.28.0",
+    "body-parser": "^1.20.2",
+    "chai": "^4.3.6",
+    "cors": "^2.8.5",
+    "dotenv": "^8.6.0",
+    "express": "^4.19.2",
+    "hardhat-change-network": "^0.0.7",
+    "jsonwebtoken": "^9.0.0",
+    "mkdirp": "^1.0.4",
+    "mocha": "^10.0.0",
+    "mongodb": "^4.4.0",
+    "mongoose": "^8.2.4",
+    "require-dir": "^1.2.0",
+    "solc": "^0.8.15",
+    "web3": "^1.7.4",
+    "web3-utils": "^1.8.1"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-chai-matchers": "^1.0.4",
+    "@nomiclabs/hardhat-ethers": "^2.2.2",
+    "eslint": "^8.57.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-n": "^16.6.2",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-react": "^7.34.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "ethers": "^5.6.9",
+    "hardhat": "^2.21.0",
+    "nodemon": "^2.0.12",
+    "prettier": "^2.6.2"
+  },
+  "bugs": {
+    "url": "https://github.com/mossland/Agora_backend/issues"
+  },
+  "homepage": "https://github.com/mossland/Agora_backend#readme"
+}
