@@ -43,6 +43,15 @@ const Forums = new Schema({
   },
   flaggedForDeletion: {
     type: Boolean
+  },
+  likes: {
+    type: Number
+  },
+  likers: {
+    type: [String]
+  },
+  views: {
+    type: Number
   }
 })
 

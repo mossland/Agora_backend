@@ -14,6 +14,18 @@ const forumsController = requireDir('./forums')
 
 // USERS endpoints
 router
+  .route('/agora-activity', usersRouter)
+  .get(usersController.getAgoraRecentActivity.getAgoraRecentActivity)
+
+router
+  .route('/login-admin', usersRouter)
+  .post(usersController.adminUiLogin.adminUiLogin)
+
+router
+  .route('/user/:uid', usersRouter)
+  .get(usersController.getUserById.getUserById)
+
+router
   .route('/users/banned', usersRouter)
   .get(usersController.getBannedUsers.getBannedUsers)
 
@@ -34,7 +46,9 @@ router
   .patch(usersController.revokeUserBan.revokeUserBan)
 
 // PROPOSALS endpoints
-
+router
+  .route('/ongoing-proposals', proposalsRouter)
+  .get(proposalsController.getOngoingProposals.getOngoingProposals)
 router
   .route('/approved-proposals', proposalsRouter)
   .get(proposalsController.getApprovedProposals.getApprovedProposals)
@@ -45,6 +59,9 @@ router
       .getRejectedInReviewProposals
   )
 
+router
+  .route('/proposal-stats', proposalsRouter)
+  .get(proposalsController.getProposalStats.getProposalStats)
 router
   .route('/proposal-tags', proposalsRouter)
   .get(proposalsController.getProposalTags.getProposalTags)
@@ -64,6 +81,8 @@ router
 // FORUMS endpoints
 
 router.route('/forums', forumsRouter).get(forumsController.getForums.getForums)
+router.route('/agora-forums', forumsRouter).get(forumsController.getAgoraForums.getAgoraForums)
+router.route('/forums/categories', forumsRouter).get(forumsController.getForumCategories.getForumCategories)
 router
   .route('/reported-forums', forumsRouter)
   .get(forumsController.getReportedForums.getReportedForums)
@@ -74,6 +93,9 @@ router
 router
   .route('/forums/delete', forumsRouter)
   .delete(forumsController.permanentlyDeleteForums.permanentlyDeleteForums)
+router
+  .route('/forums/flag-for-deletion', forumsRouter)
+  .patch(forumsController.flagForumsForDeletion.flagForumsForDeletion)
 
 router
   .route('/forums/pin/:fid', forumsRouter)
@@ -82,7 +104,9 @@ router
 router
   .route('/forums/un-pin/:fid', forumsRouter)
   .patch(forumsController.unPinForum.unPinForum)
-
+router
+  .route('/forums/revive/:fid', forumsRouter)
+  .patch(forumsController.reviveForum.reviveForum)
 router
   .route('/forums/delete/:fid', forumsRouter)
   .patch(forumsController.flagForumForDeletion.flagForumForDeletion)
@@ -96,6 +120,13 @@ router
 router
   .route('/comments/delete', forumsRouter)
   .delete(forumsController.permanentlyDeleteComments.permanentlyDeleteComments)
+router
+  .route('/comments/revive/:cid', forumsRouter)
+  .patch(forumsController.reviveComment.reviveComment)
+
+router
+  .route('/comments/flag-for-deletion', forumsRouter)
+  .patch(forumsController.flagCommentsForDeletion.flagCommentsForDeletion)
 router
   .route('/reported-comments', forumsRouter)
   .get(forumsController.getReportedComments.getReportedComments)

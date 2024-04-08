@@ -9,6 +9,9 @@ const Users = new Schema({
   role: {
     type: String
   },
+  token: {
+    type: String
+  },
   walletAddress: {
     type: String
   },
