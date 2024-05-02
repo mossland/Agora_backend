@@ -1,6 +1,6 @@
 const Proposals = require('../../models/proposals.model')
 
-module.exports.rejectProposal = async function (req, res) {
+module.exports.withdrawProposal = async function (req, res) {
   try {
     const userPermissions = req.resourceList
     const proposalId = req.params.pid
@@ -8,11 +8,11 @@ module.exports.rejectProposal = async function (req, res) {
     const proposalToUpdate = await Proposals.findOne({ _id: proposalId })
 
     if (!proposalToUpdate) {
-      return res.status(400).send('Failed to reject proposal')
+      return res.status(400).send('Failed to withdraw proposal')
     }
 
-    const rejectProposal = async () => {
-      proposalToUpdate.status = 'Rejected'
+    const withdrawProposal = async () => {
+      proposalToUpdate.status = 'Withdrawn'
       proposalToUpdate.reviewReason = null
       proposalToUpdate.reviewTimestamp = null
 
@@ -22,21 +22,21 @@ module.exports.rejectProposal = async function (req, res) {
           return res.status(200).json({ _id: proposalToUpdate._id })
         })
         .catch((err) => {
-          console.log('error', `Failed to reject proposal: ${err}`)
-          return res.status(400).send(`Failed to reject proposal ${proposalId}`)
+          console.log('error', `Failed to withdraw proposal: ${err}`)
+          return res.status(400).send(`Failed to withdraw proposal ${proposalId}`)
         })
     }
 
-    async function handleRejectProposal () {
+    async function handleWithdrawProposal () {
       try {
-        rejectProposal()
+        withdrawProposal()
       } catch (err) {
-        console.log('error', `Failed to reject proposal: ${err}`)
+        console.log('error', `Failed to withdraw proposal: ${err}`)
         return res.status(400).send(err)
       }
     }
-    handleRejectProposal()
+    handleWithdrawProposal()
   } catch (e) {
-    return res.status(400).send('Failed to reject proposal')
+    return res.status(400).send('Failed to withdraw proposal')
   }
 }

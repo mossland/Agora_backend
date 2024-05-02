@@ -16,7 +16,7 @@ module.exports.requestProposalReview = async function (req, res) {
     }
 
     const requestProposalReview = async () => {
-      proposalToUpdate.status = 'Rejected' // Set the proposal back to Rejected until the proponent re-submits it
+      proposalToUpdate.status = 'Rejected'
       proposalToUpdate.reviewReason = req.body.reviewReason
       proposalToUpdate.reviewTimestamp = new Date()
 

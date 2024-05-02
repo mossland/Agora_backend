@@ -1,4 +1,3 @@
-const { ObjectId } = require('mongodb')
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
@@ -6,13 +5,7 @@ const ForumCategories = require('./forumcategories.model')
 const Users = require('./users.model')
 
 const Forums = new Schema({
-  _id: {
-    type: ObjectId
-  },
   title: {
-    type: String
-  },
-  slug: {
     type: String
   },
   contents: {
@@ -43,9 +36,6 @@ const Forums = new Schema({
   },
   flaggedForDeletion: {
     type: Boolean
-  },
-  likes: {
-    type: Number
   },
   likers: {
     type: [String]

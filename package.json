@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mossland/Agora_backend"
+    "url": "https://github.com/lealobanov/mossland-service"
   },
   "author": "",
   "license": "ISC",
@@ -35,7 +35,7 @@
     "mongoose": "^8.2.4",
     "require-dir": "^1.2.0",
     "solc": "^0.8.15",
-    "web3": "^1.7.4",
+    "web3": "^1.10.4",
     "web3-utils": "^1.8.1"
   },
   "devDependencies": {
@@ -55,7 +55,7 @@
     "prettier": "^2.6.2"
   },
   "bugs": {
-    "url": "https://github.com/mossland/Agora_backend/issues"
+    "url": "https://github.com/lealobanov/mossland-service/issues"
   },
-  "homepage": "https://github.com/mossland/Agora_backend#readme"
+  "homepage": "https://github.com/lealobanov/mossland-service#readme"
 }

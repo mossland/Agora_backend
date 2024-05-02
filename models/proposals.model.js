@@ -1,18 +1,12 @@
-const { ObjectId } = require('mongodb')
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const ProposalTags = require('./proposaltags.model')
 const Users = require('./users.model')
+const Forums = require('./forums.model')
 
 const Proposals = new Schema({
-  _id: {
-    type: ObjectId
-  },
   title: {
-    type: String
-  },
-  slug: {
     type: String
   },
   status: {
@@ -49,9 +43,20 @@ const Proposals = new Schema({
   },
   reviewTimestamp: {
     type: Date
+  },
+  linkedDiscusion: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: Forums
+  },
+  ccdAdmins: {
+    type: [String]
+  },
+  likers: {
+    type: [String]
+  },
+  views: {
+    type: Number
   }
-  // votes
-  // cc'd admins
 })
 
 module.exports = mongoose.model('Proposals', Proposals)

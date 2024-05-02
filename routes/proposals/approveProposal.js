@@ -14,6 +14,10 @@ module.exports.approveProposal = async function (req, res) {
     const approveProposal = async () => {
       proposalToUpdate.status = 'Approved'
 
+      // Create a forum discussion for this proposal - TO-DO
+
+      // Patch the proposal with the linked forumId
+
       proposalToUpdate
         .save()
         .then((proposalToUpdate) => {
