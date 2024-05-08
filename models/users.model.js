@@ -34,6 +34,9 @@ const Users = new Schema({
   },
   firstVote: {
     type: Date
+  },
+  views: {
+    type: Number
   }
 })
 

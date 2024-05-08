@@ -36,6 +36,16 @@ module.exports.voteForProposal = async function (req, res) {
       return res.status(400).send('User can only vote once per proposal')
     }
 
+    // Update voter's firstVote if it's not already set
+    if (!voter.firstVote) {
+      voter.firstVote = now
+      try {
+        await voter.save()
+      } catch (error) {
+        return res.status(400).send('Failed to update voter\'s first vote')
+      }
+    }
+
     // Check the vote type is valid
     if (!(req.body.vote === 'For' || req.body.vote === 'Against' || req.body.vote === 'Abstain')) {
       return res.status(400).send('Failed to vote for proposal')

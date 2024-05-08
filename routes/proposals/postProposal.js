@@ -43,7 +43,9 @@ module.exports.postProposal = async function (req, res) {
       proposal
         .save()
         .then((proposal) => {
-          return res.status(201).json({ _id: proposal._id })
+          return res.status(201).json({
+            _id: proposal._id
+          })
         })
         .catch((err) => {
           return res.status(400).send(`Failed to post proposal: ${err}`)

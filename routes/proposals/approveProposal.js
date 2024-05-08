@@ -1,44 +1,53 @@
 const Proposals = require('../../models/proposals.model')
+const Forums = require('../../models/forums.model')
 
 module.exports.approveProposal = async function (req, res) {
   try {
-    const userPermissions = req.resourceList
     const proposalId = req.params.pid
 
+    // Find the proposal by ID
     const proposalToUpdate = await Proposals.findOne({ _id: proposalId })
 
+    // If proposal not found, return error
     if (!proposalToUpdate) {
-      return res.status(400).send('Failed to approve proposal')
+      return res.status(400).send('Failed to approve proposal: Proposal not found')
     }
 
-    const approveProposal = async () => {
-      proposalToUpdate.status = 'Approved'
+    // Update the proposal status to 'Approved'
+    proposalToUpdate.status = 'Approved'
 
-      // Create a forum discussion for this proposal - TO-DO
+    // Save the updated proposal
+    const updatedProposal = await proposalToUpdate.save()
 
-      // Patch the proposal with the linked forumId
+    // Create a forum topic based on the approved proposal
+    const now = new Date()
+    const topic = new Forums({
+      title: updatedProposal.title,
+      createdAt: now,
+      contents: updatedProposal.description,
+      author: updatedProposal.proponent,
+      category: 'MIP Discussion',
+      likers: [],
+      views: 0,
+      pinned: false,
+      reported: false,
+      flaggedForDeletion: false
+    })
 
-      proposalToUpdate
-        .save()
-        .then((proposalToUpdate) => {
-          return res.status(200).json({ _id: proposalToUpdate._id })
-        })
-        .catch((err) => {
-          console.log('error', `Failed to approve proposal: ${err}`)
-          return res.status(400).send(`Failed to approve proposal ${proposalId}`)
-        })
-    }
+    // Save the forum topic
+    const savedTopic = await topic.save()
 
-    async function handleApproveProposal () {
-      try {
-        approveProposal()
-      } catch (err) {
-        console.log('error', `Failed to approve proposal: ${err}`)
-        return res.status(400).send(err)
-      }
-    }
-    handleApproveProposal()
-  } catch (e) {
-    return res.status(400).send('Failed to approve proposal')
+    // Update the proposal with the forum topic ID
+    updatedProposal.linkedDiscusion = savedTopic._id
+    await updatedProposal.save()
+
+    // Return success response with proposal ID and associated topic ID
+    return res.status(201).json({
+      _id: updatedProposal._id,
+      associatedTopic: savedTopic._id
+    })
+  } catch (error) {
+    console.error('Failed to approve proposal:', error)
+    return res.status(400).send('Failed to approve proposal: Internal server error')
   }
 }

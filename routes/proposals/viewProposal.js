@@ -22,8 +22,7 @@ module.exports.viewProposal = async function (req, res) {
           return res.status(200).json({ _id: proposalToUpdate._id })
         })
         .catch((err) => {
-          console.log('error', `Failed to view proposal: ${err}`)
-          return res.status(400).send(`Failed to view proposal ${proposalId}`)
+          return res.status(400).send(`Failed to view proposal ${proposalId}: ${err}`)
         })
     }
 
@@ -31,7 +30,6 @@ module.exports.viewProposal = async function (req, res) {
       try {
         viewProposal()
       } catch (err) {
-        console.log('error', `Failed to view proposal: ${err}`)
         return res.status(400).send(err)
       }
     }

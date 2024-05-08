@@ -1,30 +1,33 @@
 require('dotenv').config({ path: '../../config.env' })
 const Users = require('../../models/users.model')
 const jwt = require('jsonwebtoken')
+const Web3 = require('web3')
 
 module.exports.login = async function (req, res) {
   // POST user login
   try {
-    const { signature } = req.body
+    const { signature, wallet } = req.body
 
     // Validate user input
-    if (!(signature)) {
+    if (!(signature && wallet)) {
       return res.status(400).send('Failed to authorize user login.')
     }
 
-    const signingAddress = ''
+    const web3 = new Web3('https://luniverse-mainnet.nodit.io/Ff9orLVj~8u4mTJts1LWNySL7QdihDFe')
 
-    // const web3 = new Web3(process.env.ALCHEMY_API_URL_ETH_TEST) // to-do: update to luniverse node
+    const signingAddress = web3.eth.accounts.recover(
+      process.env.SIGNING_MESSAGE,
+      req.body.signature
+    )
 
-    // const signingAddress = web3.eth.accounts.recover(
-    //   process.env.SIGNING_MESSAGE,
-    //   req.body.signature
-    // )
+    if (signingAddress.toLowerCase() !== req.body.wallet.toLowerCase()) {
+      return res.status(400).send('Failed to authorize user login.')
+    }
 
     // Validate if user exists in database
-    const user = await Users.findOne({ walletAddress: signature })
+    const user = await Users.findOne({ walletAddress: wallet.toLowerCase() })
     if (!user) {
-      return res.status(400).send('Failed to authorize user login.')
+      return res.status(200).json({ userExists: false })
     }
 
     if (
@@ -40,8 +43,10 @@ module.exports.login = async function (req, res) {
         }
       )
 
+      const now = new Date()
       // Save user token
       user.token = token
+      user.lastSeen = now
       user
         .save()
         .then((user) => {

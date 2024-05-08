@@ -14,6 +14,9 @@ const forumsController = requireDir('./forums')
 
 // USERS endpoints
 router
+  .route('/view-profile/:uid', usersRouter)
+  .patch(usersController.viewUserProfile.viewUserProfile)
+router
   .route('/agora-activity', usersRouter)
   .get(usersController.getAgoraRecentActivity.getAgoraRecentActivity)
 router
@@ -22,7 +25,9 @@ router
 router
   .route('/login', usersRouter)
   .post(usersController.login.login)
-
+router
+  .route('/register', usersRouter)
+  .post(usersController.register.register)
 router
   .route('/login-admin', usersRouter)
   .post(usersController.adminUiLogin.adminUiLogin)
@@ -153,7 +158,9 @@ router
 router
   .route('/forums/pin/:fid', forumsRouter)
   .patch(forumsController.pinForum.pinForum)
-
+router
+  .route('/view-forum/:fid', forumsRouter)
+  .patch(forumsController.viewForum.viewForum)
 router
   .route('/forums/un-pin/:fid', forumsRouter)
   .patch(forumsController.unPinForum.unPinForum)
@@ -166,6 +173,9 @@ router
 router
   .route('/forums/edit/:fid', forumsRouter)
   .patch(forumsController.editForumById.editForumById)
+router
+  .route('/forums/new', forumsRouter)
+  .post(forumsController.postForumTopic.postForumTopic)
 router
   .route('/comments/new', forumsRouter)
   .post(forumsController.postForumComment.postForumComment)

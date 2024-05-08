@@ -21,8 +21,13 @@ const Votes = new Schema({
   },
   voterWalletAddress: {
     type: String
+  },
+  initialMocBalance: {
+    type: Number
+  },
+  mocBalanceAtClose: {
+    type: Number
   }
-  // vote amount?
 })
 
 module.exports = mongoose.model('Votes', Votes)
