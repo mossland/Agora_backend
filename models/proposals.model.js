@@ -6,6 +6,12 @@ const Users = require('./users.model')
 const Forums = require('./forums.model')
 
 const Proposals = new Schema({
+  smartContractId: { // the ID which is used to track proposal in voting contract
+    type: Number
+  },
+  votingClosed: {
+    type: Boolean
+  },
   title: {
     type: String
   },

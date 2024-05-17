@@ -6,7 +6,7 @@ module.exports.getAgoraHighlights = async function (req, res) {
     const proposals = await Proposals.find({ status: ['Approved'] }).sort({
       createdAt: 'descending'
     })
-    await Proposals.populate(proposals, { path: 'proponent', model: 'Users' })
+    await Proposals.populate(proposals, { path: 'proponent', model: 'Users', select: 'role walletAddress isBanned nickname profilePicture createdAt lastSeen firstVote views' })
 
     // Sort proposals by likers count in descending order
     const proposalsByLikers = proposals

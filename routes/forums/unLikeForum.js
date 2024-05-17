@@ -6,6 +6,10 @@ module.exports.unLikeForum = async function (req, res) {
     const forumId = req.params.fid
     const userId = req.params.uid
 
+    if (req.user.user_id !== userId) {
+      return res.status(400).send('Failed to unlike forum')
+    }
+
     const forumToUpdate = await Forums.findById(forumId)
 
     if (!forumToUpdate) {

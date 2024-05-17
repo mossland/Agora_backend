@@ -11,6 +11,10 @@ module.exports.postForumComment = async function (req, res) {
       return res.status(400).send('Comment text and commenter id are required')
     }
 
+    if (req.user.user_id !== req.body.commenter) {
+      return res.status(400).send('Failed to comment')
+    }
+
     // Check if the forum exists
     const forumToUpdate = await Forums.findById(forumId)
     if (!forumToUpdate) {

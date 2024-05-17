@@ -2,7 +2,6 @@ const Users = require('../../models/users.model')
 
 module.exports.viewUserProfile = async function (req, res) {
   try {
-    const userPermissions = req.resourceList
     const userId = req.params.uid
 
     const userToUpdate = await Users.findOne({ _id: userId })
@@ -10,7 +9,6 @@ module.exports.viewUserProfile = async function (req, res) {
     if (!userToUpdate) {
       return res.status(400).send('Failed to view user profile')
     }
-
 
     const viewProfile = async () => {
       userToUpdate.views = userToUpdate.views + 1

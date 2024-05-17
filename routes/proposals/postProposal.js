@@ -3,8 +3,6 @@ const Proposals = require('../../models/proposals.model')
 
 module.exports.postProposal = async function (req, res) {
   try {
-    const userPermissions = req.resourceList
-
     if (
       req.body.title === undefined ||
       req.body.description === undefined ||
@@ -15,6 +13,10 @@ module.exports.postProposal = async function (req, res) {
       req.body.ccdAdmins === undefined
     ) {
       return res.status(404).send('Missing proposal data')
+    }
+
+    if (req.user.user_id !== req.body.proponent) {
+      return res.status(400).send('Failed to post proposal')
     }
 
     const proponent = await Users.findOne({ _id: req.body.proponent })

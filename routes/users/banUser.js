@@ -2,7 +2,7 @@ const Users = require('../../models/users.model')
 
 module.exports.banUser = async function (req, res) {
   try {
-    const userPermissions = req.resourceList
+    
     const userId = req.params.uid
 
     if (req.body.banReason === undefined || req.body.banReason.trim() === '') {

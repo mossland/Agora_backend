@@ -2,7 +2,6 @@ const Forums = require('../../models/forums.model')
 
 module.exports.editForumById = async function (req, res) {
   try {
-    const userPermissions = req.resourceList
     const forumId = req.params.fid
 
     if (req.body.title === undefined || req.body.title.trim() === '' || req.body.contents === undefined) {

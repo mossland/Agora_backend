@@ -11,15 +11,18 @@ const verifyToken = (req, res, next) => {
     return res.status(401).send('A token is required for authentication')
   }
 
-  try {
-    const decoded = jwt.verify(token, process.env.TOKEN_KEY)
+  const tokenn = token.includes('Bearer') ? token.split(' ')[1] : token
 
-    if (decoded.role !== 'Admin') {
-      return res.status(401).send('Unauthorized')
-    }
+  try {
+    const decoded = jwt.verify(tokenn, process.env.TOKEN_KEY)
+
+    // if (decoded.role !== 'Admin') {
+    //   return res.status(401).send('Unauthorized')
+    // }
 
     req.user = decoded
   } catch (err) {
+    console.log(err)
     return res.status(401).send('Unauthorized')
   }
   return next()

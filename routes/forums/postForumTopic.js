@@ -3,10 +3,12 @@ const Forums = require('../../models/forums.model')
 
 module.exports.postForumTopic = async function (req, res) {
   try {
-    const userPermissions = req.resourceList
-
     if (req.body.title === undefined || req.body.contents === undefined || req.body.author === undefined || req.body.category === undefined) {
       return res.status(404).send('Missing forum topic data')
+    }
+
+    if (req.user.user_id !== req.body.author) {
+      return res.status(400).send('Failed to post forum')
     }
 
     const author = await Users.findOne({ _id: req.body.author })

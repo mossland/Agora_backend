@@ -4,11 +4,14 @@ const Votes = require('../../models/votes.model')
 
 module.exports.voteForProposal = async function (req, res) {
   try {
-    const userPermissions = req.resourceList
     const proposalId = req.params.pid
 
-    if (req.body.vote === undefined || req.body.voter === undefined) {
+    if (req.body.vote === undefined || req.body.voter === undefined || !req.body.initialMocBalance === undefined) {
       return res.status(404).send('Vote type and voter id is required')
+    }
+
+    if (req.user.user_id !== req.body.voter) {
+      return res.status(400).send('Failed to vote for proposal')
     }
 
     const proposalToUpdate = await Proposals.findOne({ _id: proposalId })
@@ -57,7 +60,8 @@ module.exports.voteForProposal = async function (req, res) {
         createdAt: now,
         type: req.body.vote,
         voter: voter._id,
-        voterWalletAddress: voter.walletAddress
+        voterWalletAddress: voter.walletAddress,
+        initialMocBalance: req.body.initialMocBalance
       })
 
       vote

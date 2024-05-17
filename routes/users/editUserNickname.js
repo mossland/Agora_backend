@@ -2,13 +2,15 @@ const Users = require('../../models/users.model')
 
 module.exports.editUserNickname = async function (req, res) {
   try {
-    const userPermissions = req.resourceList
     const userId = req.params.uid
 
+    if (req.user.user_id !== userId) {
+      return res.status(400).send('Failed to edit nickname')
+    }
+
     if (req.body.nickname === undefined || req.body.nickname.trim() === '') {
-        return res.status(404).send('New nickname is required')
-      }
-  
+      return res.status(404).send('New nickname is required')
+    }
 
     const userToUpdate = await Users.findOne({ _id: userId })
 

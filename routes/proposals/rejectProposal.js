@@ -2,7 +2,6 @@ const Proposals = require('../../models/proposals.model')
 
 module.exports.rejectProposal = async function (req, res) {
   try {
-    const userPermissions = req.resourceList
     const proposalId = req.params.pid
 
     const proposalToUpdate = await Proposals.findOne({ _id: proposalId })

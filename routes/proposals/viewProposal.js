@@ -2,7 +2,6 @@ const Proposals = require('../../models/proposals.model')
 
 module.exports.viewProposal = async function (req, res) {
   try {
-    const userPermissions = req.resourceList
     const proposalId = req.params.pid
 
     const proposalToUpdate = await Proposals.findOne({ _id: proposalId })
@@ -14,7 +13,11 @@ module.exports.viewProposal = async function (req, res) {
     // Users can view a proposal multiple times
 
     const viewProposal = async () => {
-      proposalToUpdate.views = proposalToUpdate.views + 1
+      if (proposalToUpdate.views === undefined || proposalToUpdate.views === null) {
+        proposalToUpdate.views = 0
+      } else {
+        proposalToUpdate.views = proposalToUpdate.views + 1
+      }
 
       proposalToUpdate
         .save()

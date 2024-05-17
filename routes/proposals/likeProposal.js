@@ -3,9 +3,12 @@ const Users = require('../../models/users.model')
 
 module.exports.likeProposal = async function (req, res) {
   try {
-    const userPermissions = req.resourceList
     const proposalId = req.params.pid
     const userId = req.params.uid
+
+    if (req.user.user_id !== userId) {
+      return res.status(400).send('Failed to unlike proposal')
+    }
 
     const proposalToUpdate = await Proposals.findOne({ _id: proposalId })
 

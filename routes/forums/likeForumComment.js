@@ -8,6 +8,10 @@ module.exports.likeForumComment = async function (req, res) {
 
     const commentToUpdate = await Comments.findById(commentId)
 
+    if (req.user.user_id !== userId) {
+      return res.status(400).send('Failed to like comment')
+    }
+
     if (!commentToUpdate) {
       return res.status(400).send('Comment not found')
     }

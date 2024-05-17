@@ -2,7 +2,6 @@ const Comments = require('../../models/forumcomments.model')
 
 module.exports.reviveComment = async function (req, res) {
   try {
-    const userPermissions = req.resourceList
     const commentId = req.params.cid
 
     const commentToUpdate = await Comments.findOne({ _id: commentId })

@@ -2,10 +2,13 @@ const Proposals = require('../../models/proposals.model')
 
 module.exports.withdrawProposal = async function (req, res) {
   try {
-    const userPermissions = req.resourceList
     const proposalId = req.params.pid
 
     const proposalToUpdate = await Proposals.findOne({ _id: proposalId })
+
+    if (req.user.user_id !== proposalToUpdate.proponent) {
+      return res.status(400).send('Failed to withdraw proposal')
+    }
 
     if (!proposalToUpdate) {
       return res.status(400).send('Failed to withdraw proposal')

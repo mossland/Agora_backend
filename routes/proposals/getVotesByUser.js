@@ -5,7 +5,7 @@ module.exports.getVotesByUser = async function (req, res) {
     const userId = req.params.uid
     const votes = await Votes.find({ voter: userId }).sort({ createdAt: 'descending' })
     await Votes.populate(votes, { path: 'associatedProposal', model: 'Proposals' })
-    await Votes.populate(votes, { path: 'voter', model: 'Users' })
+    await Votes.populate(votes, { path: 'voter', model: 'Users', select: 'role walletAddress isBanned nickname profilePicture createdAt lastSeen firstVote views' })
     return res.json(votes)
   } catch (err) {
     return res.status(400).send('Failed to GET votes by user')

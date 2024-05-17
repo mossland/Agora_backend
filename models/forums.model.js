@@ -31,6 +31,10 @@ const Forums = new Schema({
   reportedTimestamp: {
     type: Date
   },
+  reporter: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: Users
+  },
   reportReason: {
     type: String
   },

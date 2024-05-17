@@ -6,6 +6,10 @@ module.exports.likeForum = async function (req, res) {
     const forumId = req.params.fid
     const userId = req.params.uid
 
+    if (req.user.user_id !== userId) {
+      return res.status(400).send('Failed to like forum')
+    }
+
     const forumToUpdate = await Forums.findById(forumId)
 
     if (!forumToUpdate) {

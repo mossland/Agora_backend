@@ -2,11 +2,14 @@ const Comments = require('../../models/forumcomments.model')
 
 module.exports.reportForumComment = async function (req, res) {
   try {
-    const userPermissions = req.resourceList
     const commentId = req.params.cid
 
-    if (req.body.reportReason === undefined || req.body.reportReason.trim() === '') {
+    if (req.body.reportReason === undefined || req.body.reporter === undefined || req.body.reportReason.trim() === '') {
       return res.status(404).send('Report reason is required')
+    }
+
+    if (req.user.user_id !== req.body.reporter) {
+      return res.status(400).send('Failed to report comment')
     }
 
     const commentToUpdate = await Comments.findOne({ _id: commentId })
@@ -19,6 +22,7 @@ module.exports.reportForumComment = async function (req, res) {
       commentToUpdate.reported = true
       commentToUpdate.reportReason = req.body.reportReason
       commentToUpdate.reportedTimestamp = new Date()
+      commentToUpdate.reporter = req.body.reporter
 
       commentToUpdate
         .save()

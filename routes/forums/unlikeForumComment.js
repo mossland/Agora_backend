@@ -12,6 +12,10 @@ module.exports.unlikeForumComment = async function (req, res) {
       return res.status(400).send('Comment not found')
     }
 
+    if (req.user.user_id !== userId) {
+      return res.status(400).send('Failed to unlike comment')
+    }
+
     const user = await Users.findById(userId)
 
     if (!user) {

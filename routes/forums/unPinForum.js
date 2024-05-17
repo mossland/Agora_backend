@@ -2,7 +2,6 @@ const Forums = require('../../models/forums.model')
 
 module.exports.unPinForum = async function (req, res) {
   try {
-    const userPermissions = req.resourceList
     const forumId = req.params.fid
 
     const forumToUpdate = await Forums.findOne({ _id: forumId })

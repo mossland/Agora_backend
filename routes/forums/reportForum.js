@@ -2,11 +2,14 @@ const Forums = require('../../models/forums.model')
 
 module.exports.reportForum = async function (req, res) {
   try {
-    const userPermissions = req.resourceList
     const forumId = req.params.fid
 
-    if (req.body.reportReason === undefined || req.body.reportReason.trim() === '') {
+    if (req.body.reportReason === undefined || req.body.reporter === undefined || req.body.reportReason.trim() === '') {
       return res.status(404).send('Report reason is required')
+    }
+
+    if (req.user.user_id !== req.body.reporter) {
+      return res.status(400).send('Failed to report forum')
     }
 
     const forumToUpdate = await Forums.findOne({ _id: forumId })
@@ -19,6 +22,7 @@ module.exports.reportForum = async function (req, res) {
       forumToUpdate.reported = true
       forumToUpdate.reportReason = req.body.reportReason
       forumToUpdate.reportedTimestamp = new Date()
+      forumToUpdate.reporter = req.body.reporter
 
       forumToUpdate
         .save()

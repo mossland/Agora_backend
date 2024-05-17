@@ -2,6 +2,7 @@ const express = require('express')
 const requireDir = require('require-dir')
 
 const auth = require('../utils/authClient')
+const permissionsClient = require('../utils/permissionsClient')
 
 const router = express.Router()
 const usersRouter = express.Router({ mergeParams: true })
@@ -21,7 +22,7 @@ router
   .get(usersController.getAgoraRecentActivity.getAgoraRecentActivity)
 router
   .route('/user-activity-admin/:uid', usersRouter)
-  .get(usersController.getUserActivityForAdminView.getUserActivityForAdminView)
+  .get([auth, permissionsClient, usersController.getUserActivityForAdminView.getUserActivityForAdminView])
 router
   .route('/login', usersRouter)
   .post(usersController.login.login)
@@ -34,11 +35,11 @@ router
 
 router
   .route('/user/:uid', usersRouter)
-  .get(usersController.getUserById.getUserById)
+  .get([auth, usersController.getUserById.getUserById])
 
 router
   .route('/users/non-admin', usersRouter)
-  .get(usersController.getNonAdminUsers.getNonAdminUsers)
+  .get([auth, usersController.getNonAdminUsers.getNonAdminUsers])
 
 router
   .route('/users/admin', usersRouter)
@@ -46,33 +47,33 @@ router
 
 router
   .route('/users/banned', usersRouter)
-  .get(usersController.getBannedUsers.getBannedUsers)
+  .get([auth, permissionsClient, usersController.getBannedUsers.getBannedUsers])
 
 router
   .route('/users/general', usersRouter)
-  .get(usersController.getGeneralUsers.getGeneralUsers)
+  .get([auth, usersController.getGeneralUsers.getGeneralUsers])
 
 router
   .route('/users/ban/:uid', usersRouter)
-  .patch(usersController.banUser.banUser)
+  .patch([auth, permissionsClient, usersController.banUser.banUser])
 
 router
   .route('/users/edit-nickname/:uid', usersRouter)
-  .patch(usersController.editUserNickname.editUserNickname)
+  .patch([auth, usersController.editUserNickname.editUserNickname])
 router
   .route('/users/edit-pfp/:uid', usersRouter)
-  .patch(usersController.editUserPFP.editUserPFP)
+  .patch([auth, usersController.editUserPFP.editUserPFP])
 router
   .route('/proposals-by-user/:uid', usersRouter)
-  .get(usersController.getProposalsCreatedByUser.getProposalsCreatedByUser)
+  .get([auth, usersController.getProposalsCreatedByUser.getProposalsCreatedByUser])
 
 router
   .route('/votes-by-user/:uid', proposalsRouter)
-  .get(proposalsController.getVotesByUser.getVotesByUser)
+  .get([auth, proposalsController.getVotesByUser.getVotesByUser])
 
 router
   .route('/users/revoke-ban/:uid', usersRouter)
-  .patch(usersController.revokeUserBan.revokeUserBan)
+  .patch([auth, permissionsClient, usersController.revokeUserBan.revokeUserBan])
 
 // PROPOSALS endpoints
 router
@@ -87,8 +88,8 @@ router
 router
   .route('/pending-proposals', proposalsRouter)
   .get(
-    proposalsController.getRejectedInReviewProposals
-      .getRejectedInReviewProposals
+    [auth, permissionsClient, proposalsController.getRejectedInReviewProposals
+      .getRejectedInReviewProposals]
   )
 
 router
@@ -100,19 +101,25 @@ router
 
 router
   .route('/proposals/approve/:pid', proposalsRouter)
-  .patch(proposalsController.approveProposal.approveProposal)
+  .patch([auth, permissionsClient, proposalsController.approveProposal.approveProposal])
 router
   .route('/proposals/withdraw/:pid', proposalsRouter)
-  .patch(proposalsController.withdrawProposal.withdrawProposal)
+  .patch([auth, proposalsController.withdrawProposal.withdrawProposal])
 router
   .route('/proposals/reject/:pid', proposalsRouter)
-  .patch(proposalsController.rejectProposal.rejectProposal)
+  .patch([auth, proposalsController.rejectProposal.rejectProposal])
+router
+  .route('/proposals/patch-sc-id/:pid', proposalsRouter)
+  .patch([auth, proposalsController.patchProposalSCId.patchProposalSCId])
+router
+  .route('/proposals/close-voting/:pid', proposalsRouter)
+  .patch([auth, proposalsController.closeProposalVoting.closeProposalVoting])
 router
   .route('/proposals/edit/:pid', proposalsRouter)
-  .patch(proposalsController.editProposalById.editProposalById)
+  .patch([auth, proposalsController.editProposalById.editProposalById])
 router
   .route('/proposals/request-review/:pid', proposalsRouter)
-  .patch(proposalsController.requestProposalReview.requestProposalReview)
+  .patch([auth, permissionsClient, proposalsController.requestProposalReview.requestProposalReview])
 router
   .route('/proposals/approved/:pid', proposalsRouter)
   .get(proposalsController.getApprovedProposalById.getApprovedProposalById)
@@ -121,19 +128,19 @@ router
   .get(proposalsController.getProposalVotes.getProposalVotes)
 router
   .route('/like-proposal/:pid/:uid', proposalsRouter)
-  .patch(proposalsController.likeProposal.likeProposal)
+  .patch([auth, proposalsController.likeProposal.likeProposal])
 router
   .route('/unlike-proposal/:pid/:uid', proposalsRouter)
-  .patch(proposalsController.unlikeProposal.unlikeProposal)
+  .patch([auth, proposalsController.unlikeProposal.unlikeProposal])
 router
   .route('/view-proposal/:pid', proposalsRouter)
   .patch(proposalsController.viewProposal.viewProposal)
 router
   .route('/vote-proposal/:pid', proposalsRouter)
-  .post(proposalsController.voteForProposal.voteForProposal)
+  .post([auth, proposalsController.voteForProposal.voteForProposal])
 router
   .route('/new-proposal', proposalsRouter)
-  .post(proposalsController.postProposal.postProposal)
+  .post([auth, proposalsController.postProposal.postProposal])
 // FORUMS endpoints
 
 router.route('/forums', forumsRouter).get(forumsController.getForums.getForums)
@@ -143,77 +150,80 @@ router.route('/agora-comments/:fid', forumsRouter).get(forumsController.getAgora
 router.route('/forums/categories', forumsRouter).get(forumsController.getForumCategories.getForumCategories)
 router
   .route('/reported-forums', forumsRouter)
-  .get(forumsController.getReportedForums.getReportedForums)
+  .get([auth, permissionsClient, forumsController.getReportedForums.getReportedForums])
 
 router
   .route('/deleted-forums', forumsRouter)
-  .get(forumsController.getDeletedForums.getDeletedForums)
+  .get([auth, permissionsClient, forumsController.getDeletedForums.getDeletedForums])
 router
   .route('/forums/delete', forumsRouter)
-  .delete(forumsController.permanentlyDeleteForums.permanentlyDeleteForums)
+  .delete([auth, permissionsClient, forumsController.permanentlyDeleteForums.permanentlyDeleteForums])
 router
   .route('/forums/flag-for-deletion', forumsRouter)
-  .patch(forumsController.flagForumsForDeletion.flagForumsForDeletion)
+  .patch([auth, permissionsClient, forumsController.flagForumsForDeletion.flagForumsForDeletion])
 
 router
   .route('/forums/pin/:fid', forumsRouter)
-  .patch(forumsController.pinForum.pinForum)
+  .patch([auth, permissionsClient, forumsController.pinForum.pinForum])
 router
   .route('/view-forum/:fid', forumsRouter)
   .patch(forumsController.viewForum.viewForum)
 router
   .route('/forums/un-pin/:fid', forumsRouter)
-  .patch(forumsController.unPinForum.unPinForum)
+  .patch([auth, permissionsClient, forumsController.unPinForum.unPinForum])
 router
   .route('/forums/revive/:fid', forumsRouter)
-  .patch(forumsController.reviveForum.reviveForum)
+  .patch([auth, permissionsClient, forumsController.reviveForum.reviveForum])
 router
   .route('/forums/delete/:fid', forumsRouter)
-  .patch(forumsController.flagForumForDeletion.flagForumForDeletion)
+  .patch([auth, permissionsClient, forumsController.flagForumForDeletion.flagForumForDeletion])
 router
   .route('/forums/edit/:fid', forumsRouter)
-  .patch(forumsController.editForumById.editForumById)
+  .patch([auth, permissionsClient, forumsController.editForumById.editForumById])
 router
   .route('/forums/new', forumsRouter)
-  .post(forumsController.postForumTopic.postForumTopic)
+  .post([auth, forumsController.postForumTopic.postForumTopic])
 router
   .route('/comments/new', forumsRouter)
-  .post(forumsController.postForumComment.postForumComment)
+  .post([auth, forumsController.postForumComment.postForumComment])
 router
   .route('/deleted-comments', forumsRouter)
-  .get(forumsController.getDeletedComments.getDeletedComments)
+  .get([auth, permissionsClient, forumsController.getDeletedComments.getDeletedComments])
 router
   .route('/comments/delete', forumsRouter)
-  .delete(forumsController.permanentlyDeleteComments.permanentlyDeleteComments)
+  .delete([auth, permissionsClient, forumsController.permanentlyDeleteComments.permanentlyDeleteComments])
 router
   .route('/comments/revive/:cid', forumsRouter)
-  .patch(forumsController.reviveComment.reviveComment)
+  .patch([auth, permissionsClient, forumsController.reviveComment.reviveComment])
 
 router
   .route('/comments/flag-for-deletion', forumsRouter)
-  .patch(forumsController.flagCommentsForDeletion.flagCommentsForDeletion)
+  .patch([auth, permissionsClient, forumsController.flagCommentsForDeletion.flagCommentsForDeletion])
 router
   .route('/reported-comments', forumsRouter)
-  .get(forumsController.getReportedComments.getReportedComments)
+  .get([auth, permissionsClient, forumsController.getReportedComments.getReportedComments])
 router
   .route('/comments/report/:cid', forumsRouter)
-  .patch(forumsController.reportForumComment.reportForumComment)
+  .patch([auth, forumsController.reportForumComment.reportForumComment])
 router
   .route('/forums/report/:fid', forumsRouter)
-  .patch(forumsController.reportForum.reportForum)
+  .patch([auth, forumsController.reportForum.reportForum])
 router
   .route('/forums-by-user/:uid', forumsRouter)
-  .get(forumsController.getForumsByUser.getForumsByUser)
+  .get([auth, forumsController.getForumsByUser.getForumsByUser])
 router
   .route('/like-forum/:fid/:uid', forumsRouter)
-  .patch(forumsController.likeForum.likeForum)
+  .patch([auth, forumsController.likeForum.likeForum])
 router
   .route('/unlike-forum/:fid/:uid', forumsRouter)
-  .patch(forumsController.unLikeForum.unLikeForum)
+  .patch([auth, forumsController.unLikeForum.unLikeForum])
 router
   .route('/like-forum-comment/:cid/:uid', forumsRouter)
-  .patch(forumsController.likeForumComment.likeForumComment)
+  .patch([auth, forumsController.likeForumComment.likeForumComment])
 router
   .route('/unlike-forum-comment/:cid/:uid', forumsRouter)
-  .patch(forumsController.unlikeForumComment.unlikeForumComment)
+  .patch([auth, forumsController.unlikeForumComment.unlikeForumComment])
+router
+  .route('/moc-balance/:wid', usersRouter)
+  .get([usersController.getUserMocBalance.getUserMocBalance])
 module.exports = router

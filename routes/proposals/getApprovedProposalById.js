@@ -9,7 +9,7 @@ module.exports.getApprovedProposalById = async function (req, res) {
       return res.status(400).send('Failed to GET approved proposal by id')
     }
 
-    await Proposals.populate(proposal, { path: 'proponent', model: 'Users' })
+    await Proposals.populate(proposal, { path: 'proponent', model: 'Users', select: 'role walletAddress isBanned nickname profilePicture createdAt lastSeen firstVote views' })
 
     return res.json(proposal)
   } catch (err) {

@@ -2,7 +2,6 @@ const Proposals = require('../../models/proposals.model')
 
 module.exports.editProposalById = async function (req, res) {
   try {
-    const userPermissions = req.resourceList
     const proposalId = req.params.pid
 
     if (req.body.title === undefined || req.body.title.trim() === '' ||
@@ -16,6 +15,10 @@ module.exports.editProposalById = async function (req, res) {
     }
 
     const proposalToUpdate = await Proposals.findOne({ _id: proposalId })
+
+    if (req.user.user_id !== proposalToUpdate.proponent) {
+      return res.status(400).send('Failed to edit proposal')
+    }
 
     if (!proposalToUpdate) {
       return res.status(400).send(`Failed to update proposal ${proposalId}`)

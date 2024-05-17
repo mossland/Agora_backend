@@ -5,7 +5,7 @@ const Votes = require('../../models/votes.model')
 module.exports.getUserActivityForAdminView = async function (req, res) {
   try {
     const comments = await Comments.find({ author: req.params.uid }).sort({ createdAt: 'descending' })
-    await Comments.populate(comments, { path: 'author', model: 'Users' })
+    await Comments.populate(comments, { path: 'author', model: 'Users', select: 'role walletAddress isBanned nickname profilePicture createdAt lastSeen firstVote views' })
     await Comments.populate(comments, { path: 'forumTopic', model: 'Forums' })
 
     const updatedComments = comments.map(c => {

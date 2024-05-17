@@ -2,8 +2,11 @@ const Users = require('../../models/users.model')
 
 module.exports.editUserPFP = async function (req, res) {
   try {
-    const userPermissions = req.resourceList
     const userId = req.params.uid
+
+    if (req.user.user_id !== userId) {
+      return res.status(400).send('Failed to edit pfp')
+    }
 
     function validatePFP (pfp) {
       if (pfp === '1' || pfp === '2' || pfp === '3' || pfp === '4') {

@@ -4,7 +4,7 @@ const Votes = require('../../models/votes.model')
 module.exports.getAgoraRecentActivity = async function (req, res) {
   try {
     const comments = await Comments.find({ flaggedForDeletion: false }).sort({ createdAt: 'descending' })
-    await Comments.populate(comments, { path: 'author', model: 'Users' })
+    await Comments.populate(comments, { path: 'author', model: 'Users', select: 'role walletAddress isBanned nickname profilePicture createdAt lastSeen firstVote views' })
     await Comments.populate(comments, { path: 'forumTopic', model: 'Forums' })
 
     const updatedComments = comments.map(c => {
@@ -13,7 +13,7 @@ module.exports.getAgoraRecentActivity = async function (req, res) {
 
     const votes = await Votes.find().sort({ createdAt: 'descending' })
     await Votes.populate(votes, { path: 'associatedProposal', model: 'Proposals' })
-    await Votes.populate(votes, { path: 'voter', model: 'Users' })
+    await Votes.populate(votes, { path: 'voter', model: 'Users', select: 'role walletAddress isBanned nickname profilePicture createdAt lastSeen firstVote views' })
 
     const updatedVotes = votes.map(c => {
       return { ...c, type: 'Vote' }

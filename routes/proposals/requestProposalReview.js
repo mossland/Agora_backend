@@ -2,7 +2,6 @@ const Proposals = require('../../models/proposals.model')
 
 module.exports.requestProposalReview = async function (req, res) {
   try {
-    const userPermissions = req.resourceList
     const proposalId = req.params.pid
 
     if (req.body.reviewReason === undefined || req.body.reviewReason.trim() === '') {

@@ -1,7 +1,7 @@
 const Users = require('../../models/users.model')
 
 module.exports.revokeUserBan = async function (req, res) {
-  const userPermissions = req.resourceList
+  
   const userId = req.params.uid
 
   const usertoupdate = await Users.findOne({ _id: userId })
