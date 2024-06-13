@@ -44,9 +44,6 @@ const Proposals = new Schema({
   extended: {
     type: Boolean
   },
-  extendedEndDate: {
-    type: Date
-  },
   reviewTimestamp: {
     type: Date
   },

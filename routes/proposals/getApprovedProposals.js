@@ -12,8 +12,7 @@ module.exports.getApprovedProposals = async function (req, res) {
         return 'Ongoing'
       }
       if (now >= p.endDate) {
-        // to-do: check voting result
-        if (p.extended === true && now < p.extendedEndDate) {
+        if (p.extended === true) {
           return 'Extended'
         }
         return 'Ended'

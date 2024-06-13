@@ -27,6 +27,7 @@ contract TokenWeightedVoting {
         uint256 startDate;
         uint256 endDate;
         bool closed;
+        bool extended;
         address[] voterAddresses; // Track voter addresses separately
         mapping(address => Voter) votesHistory;
         address proponent;
@@ -39,6 +40,8 @@ contract TokenWeightedVoting {
 
     ERC20 public mocToken; // Interface of the MOC token contract
     uint256 public proposalCount;
+
+    address[] public admins;
 
     event VoteCast(
         uint256 proposalId,
@@ -57,9 +60,11 @@ contract TokenWeightedVoting {
         uint256 endDate,
         address proponent
     );
+    event EndDateExtended(uint256 proposalId, uint256 newEndDate);
 
-    constructor(address _mocToken) {
+    constructor(address _mocToken, address[] memory _admins) {
         mocToken = ERC20(_mocToken); // Initialize the MOC token interface with the token contract address
+        admins = _admins;
     }
 
     modifier votingOpen(uint256 proposalId) {
@@ -79,6 +84,20 @@ contract TokenWeightedVoting {
         _;
     }
 
+    modifier onlyAdmin() {
+        require(isAdmin(msg.sender), "Only admins can call this function");
+        _;
+    }
+
+    function isAdmin(address addr) public view returns (bool) {
+        for (uint256 i = 0; i < admins.length; i++) {
+            if (admins[i] == addr) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // Function to create a new proposal
     function createProposal(
         uint256 _startDate,
@@ -93,6 +112,7 @@ contract TokenWeightedVoting {
         newProposal.startDate = _startDate;
         newProposal.endDate = _endDate;
         newProposal.closed = false;
+        newProposal.extended = false;
         newProposal.proponent = msg.sender;
 
         emit ProposalCreated(
@@ -174,6 +194,16 @@ contract TokenWeightedVoting {
         emit VotingClosed(proposalId);
         emit VotingResult(proposalId, result);
     }
+
+    function extendEndDate(uint256 proposalId, uint256 newEndDate) external onlyAdmin notClosed(proposalId) {
+        require(newEndDate > proposals[proposalId].endDate, "New end date must be later than current end date");
+
+        proposals[proposalId].endDate = newEndDate;
+        proposals[proposalId].extended = true;
+
+        emit EndDateExtended(proposalId, newEndDate);
+    }
+
 
     // Function to calculate the voting result of a proposal
     function calculateResult(uint256 proposalId)

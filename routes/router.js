@@ -103,6 +103,9 @@ router
   .route('/proposals/approve/:pid', proposalsRouter)
   .patch([auth, permissionsClient, proposalsController.approveProposal.approveProposal])
 router
+  .route('/proposals/extend/:pid', proposalsRouter)
+  .patch([auth, permissionsClient, proposalsController.extendProposal.extendProposal])
+router
   .route('/proposals/withdraw/:pid', proposalsRouter)
   .patch([auth, proposalsController.withdrawProposal.withdrawProposal])
 router
@@ -189,6 +192,10 @@ router
 router
   .route('/deleted-comments', forumsRouter)
   .get([auth, permissionsClient, forumsController.getDeletedComments.getDeletedComments])
+
+router
+  .route('/comments/delete/:cid', forumsRouter)
+  .patch([auth, permissionsClient, forumsController.permanentlyDeleteComment.permanentlyDeleteComment])
 router
   .route('/comments/delete', forumsRouter)
   .delete([auth, permissionsClient, forumsController.permanentlyDeleteComments.permanentlyDeleteComments])
